@@ -1,12 +1,16 @@
+
+
+const PLAY = -1;
+const END = 1;
+const START = 0
+var gameState = START;
+
+
 var jack,jack2;
 var platform,platform2;
 var jack_image, platform_image;
-var platform1,platform2,platform3,platform4,platform5,platform6;
+var platform1,platform2,platform3,platform4,platform5,platform6;;
 
-const PLAY = 1;
-const END = 0;
-const START = 2
-var gameState = START;
 
 function preload(){
   jack_image=loadImage("images/jack2.png");
@@ -21,9 +25,7 @@ bg = loadImage('images/bg.png');
 
 function setup() {
   createCanvas(500, 500);
- //bg = createSprite(250,250,500,500);
-  //bg.addImage(bgImg)
-  //bg.scale =0.2;
+ 
   player = createSprite(250,300,20,50);
   player.addImage("player",jack_image)
 
@@ -34,83 +36,84 @@ function setup() {
 }
 
 function draw() {
+  
   background(bg);
-  if(gameState==START)
-  {
-  fill(255);
-  textSize(16);
-  text("Press Space to start the game",130,80);
-  text("Press up arrow to make the player jump",90,100);
-  text("Press right and left arrow to move right and left ",60,120);
-  if(keyDown("space"))
-  {
-    player.velocityY=-16;
+
+  if(gameState==START){
+    fill(255);
+    textSize(16);
+    text("Press UP to start and make jack jump",95,80);
+    text("Press right and left arrow to make jack go right and left",50,100);
+  spawnplatforms();
+    if(keyDown("up")) {
+      platform.y = 700;
+    player.velocityY = -16;  
+   
+   
     gameState = PLAY;
   }
-  }
-
-  if(gameState == PLAY){
-  if(keyDown("up"))
-  {
-    player.velocityY=-16;
-  }
-  
-  if(keyDown("left"))
-  {
-    player.x = player.x - 7;
     
   }
+  if(gameState == PLAY){
+    spawnplatforms();
+    
+    player.collide(platform);
+    
+  if(platformGroups.isTouching(player) && player.velocityY>5) {
+      player.velocityY = -16;  
+    }
 
-  if(keyDown("right"))
-  {
-    player.x = player.x + 7;
+    // //jump when the player touches the platform
+    
    
-  }
-
-  player.velocityY = player.velocityY +0.8;
-
-  player.collide(platform);
-  
-  
-  player.collide(platformGroups);
-  
-  
-  spawnPlatform();
-  }
+    if(keyDown("left"))
+      {
+        player.x-=7
+      }
+    
+    if(keyDown("right"))
+      {
+        player.x+=7
+      }
+    //add gravity
+    player.velocityY = player.velocityY + 0.8;
+    
+    }
+   
   drawSprites();
   
   
 }
+function spawnplatforms() {
 
-function spawnPlatform(){
-  if(frameCount % 40 ===0){
-  
-    platform.destroy();
-   
-    var platforms = createSprite(250,0,50,50);
-  platforms.velocityY = 5;
+  if(frameCount % 40 == 0) {
+    xx=Math.round(random(50,450))
+    var platform = createSprite(xx,-10,150,20);
+    platform.velocityY = 4;
 
-  var r = Math.round(random(1,6))
-  switch (r){
-    case 1 : platforms.addImage(platform1);
-    break;
-    case 2 : platforms.addImage(platform2);
-    break;
-    case 3 : platforms.addImage(platform3);
-    break;
-    case 4 : platforms.addImage(platform4);
-    break;
-    case 5 : platforms.addImage(platform5);
-    break;
-    case 6 : platforms.addImage(platform6);
-    break;
-  }
+    var r = Math.round(random(1,5))
+    switch(r){
+      case 1 : platform.addImage(platform1);
+      break;
+      case 2 : platform.addImage(platform2);
+      break;
+      case 3 : platform.addImage(platform3);
+      break;
+      case 4 : platform.addImage(platform4);
+      break;
+      case 5 : platform.addImage(platform5);
+      break;
+      default: break;
+    }
  
-  platforms.scale = 0.1;
+    //assign scale and lifetime to the platform           
+    platform.scale = 0.1;
 
-  platformGroups.add(platforms);
+    platform.lifetime = 200;
+    
+    //add each platform to the group
+    platformGroups.add(platform);
+   
+}
 
-  platforms.x = random(0,500);
-  platforms.lifetime = 200;
-  }
 }
