@@ -104,6 +104,8 @@ function spawnplatforms() {
       case 5 : platform.addImage(platform5);
       break;
       default: break;
+     case 6 : platforms.addImage(platform6);
+    break;
     }
  
     //assign scale and lifetime to the platform           
